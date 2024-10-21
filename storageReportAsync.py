@@ -2,7 +2,7 @@
 import csv
 import time
 from threading import Lock
-from requests.exceptions import RequestException
+from requests.exceptions import RequestException # type: ignore
 
 # Import the necessary modules and handle potential ImportError
 try:
