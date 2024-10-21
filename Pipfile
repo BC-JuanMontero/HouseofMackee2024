@@ -1,0 +1,31 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+numpy = "*"
+requests = "*"
+requests-toolbelt = "*"
+boto3 = "*"
+dropbox = "*"
+boxsdk = "*"
+pandas = "*"
+clint = "*"
+xlrd = "*"
+jwt = "*"
+openpyxl = "*"
+
+[dev-packages]
+pytest = "*"
+mypy = "*"
+ipdb = "*"
+pylint = "*"
+boto3-stubs = "*"
+data-science-types = "*"
+pyflakes = "*"
+build = "*"
+twine = "*"
+
+[requires]
+python_version = "3.9"
