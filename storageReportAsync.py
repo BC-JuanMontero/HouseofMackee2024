@@ -2,14 +2,17 @@
 import csv
 import time
 from threading import Lock
-from requests.exceptions import RequestException
-from mackee import main, get_cms, get_args
-from brightcove.utils import list_to_csv, eprint, is_shared_by
-from brightcove.utils import TimeString
-from brightcove.utils import SimpleProgressDisplay
+from requests.exceptions import RequestException # type: ignore
+
+# Import the necessary modules and handle potential ImportError
+try:
+    from mackee import main, get_cms, get_args
+    from brightcove.utils import list_to_csv, eprint, is_shared_by, TimeString, SimpleProgressDisplay
+except ImportError as e:
+    raise ImportError(f"Error importing modules: {e}. Ensure all dependencies are installed.")
 
 data_lock = Lock()
-row_list = [('account_id','video_id','delivery_type','master_size','hls_renditions_size','mp4_renditions_size','audio_renditions_size', 'flv_renditions_size')]
+row_list = [('account_id', 'video_id', 'delivery_type', 'master_size', 'hls_renditions_size', 'mp4_renditions_size', 'audio_renditions_size', 'flv_renditions_size')]
 show_progress = SimpleProgressDisplay(steps=100, add_info='videos processed')
 
 #===========================================
@@ -40,7 +43,7 @@ def get_master_storage(video: dict) -> int:
 #===========================================
 def get_rendition_sizes(video: dict) -> dict:
     """
-    Function to get the sizes of all rendtions for a video.
+    Function to get the sizes of all renditions for a video.
 
     Returns a dict with the relevant sizes if available, 0 for sizes if video has no renditions or -1 in case of an error.
     """
@@ -74,7 +77,7 @@ def get_rendition_sizes(video: dict) -> dict:
         else:
             return sizes
     except RequestException:
-        return { key:-1 for key in sizes }
+        return {key: -1 for key in sizes}
 
     if response and response.ok:
         renditions = response.json()
@@ -122,7 +125,7 @@ def find_storage_size(video: dict) -> None:
 
     # add a new row to the CSV data
     with data_lock:
-        row_list.append((row_dict.values()))
+        row_list.append(tuple(row_dict.values()))
         show_progress()
 
 #===========================================
