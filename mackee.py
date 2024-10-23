@@ -356,6 +356,7 @@ def process_input(account_info_file: str='', process_callback: Callable=list_vid
     get_opts(opts=opts)
 
     # if async is enabled use more than one thread
+    
     max_threads = get_args().a or 1
     mac_logger.info('Using %d thread(s) for processing', max_threads)
 

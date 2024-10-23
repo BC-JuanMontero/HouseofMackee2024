@@ -22,6 +22,7 @@ def find_aspect_ratios(video: dict) -> None:
 
     if response.status_code in get_cms().success_responses:
         renditions = response.json()
+        print(renditions)
         for rendition in renditions:
             if rendition.get('media_type') == 'video' or rendition.get('audio_only') == False:
                 source_w = rendition.get('frame_width')
