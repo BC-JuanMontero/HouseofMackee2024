@@ -10,7 +10,7 @@ from brightcove.utils import get_value, default_split
 # use . to to get sub fields (like specific custom fields (e.g. 'custom_fields.my_field'))
 # use : to specify a default value in case the response is empty (e.g 'name:NoName')
 # use [] to specify a specific index
-row_list = [ ('account_id','id','name')]
+row_list = [ ('account_id','name','id','reference_id')]
 
 
 # some globals

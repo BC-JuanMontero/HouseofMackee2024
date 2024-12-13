@@ -95,7 +95,7 @@ def get_rendition_sizes(video: dict) -> dict:
             # something I haven't seen before?
             except KeyError:
                 eprint(f'WARNING: unexpected container/media type for video ID {video_id}: "{video_container}"/"{media_type}"')
-                eprint('Please report the above message to MacKenzie Glanzer.')
+                eprint('Please report the above message to TS Support [Juan Montero or any T2D].')
 
         # if it's Dynamic Delivery we need to get MP4 sizes from the sources endpoint
         if delivery_type == 'dynamic_origin' and sizes['mp4_renditions_size'] == 0:

@@ -1,9 +1,20 @@
 #!/usr/bin/env python3
 from mackee import main, get_cms
+from threading import Lock
+from csv import Error as CSVError
+from mackee import main, get_args
+from brightcove.utils import list_to_csv, eprint
+from brightcove.utils import SimpleProgressDisplay, SimpleTimer
+import csv
+from mackee import main, get_cms
 from brightcove.utils import aspect_ratio, eprint
 #=============================================
 # callback to find the aspect ratio of videos
 #=============================================
+data_lock = Lock()
+show_progress = SimpleProgressDisplay(steps=100, add_info='videos processed')
+row_list=[('Video ID', 'Aspect Ratio X', 'Aspect Ratio Y')]
+
 def find_aspect_ratios(video: dict) -> None:
     """
     This will print out the aspectratio of a video.
@@ -17,7 +28,7 @@ def find_aspect_ratios(video: dict) -> None:
     elif delivery_type == 'dynamic_origin':
         response = get_cms().GetDynamicRenditions(video_id=video_id)
     else:
-        eprint(f'No video dimensions found for video ID {video_id} (delivery type: {delivery_type}).')
+        print(f'No video dimensions found for video ID {video_id} (delivery type: {delivery_type}).')
         return
 
     if response.status_code in get_cms().success_responses:
@@ -31,15 +42,27 @@ def find_aspect_ratios(video: dict) -> None:
 
         if source_h and source_w:
             x, y = aspect_ratio(source_w, source_h)
-            print(video_id, x, y, sep=', ')
+            row=[video_id,x,y]
+            with data_lock:
+                row_list.append(row)
+                show_progress()
         else:
-            eprint(f'No video renditions found for video ID {video_id}.')
+           print(f'No video renditions found for video ID {video_id}.')
 
     else:
-        eprint(f'Could not get renditions for video ID {video_id}.')
+        print(f'Could not get renditions for video ID {video_id}.')
 
 #===========================================
 # only run code if it's not imported
 #===========================================
 if __name__ == '__main__':
-    main(find_aspect_ratios)
+    with SimpleTimer():
+        # generate the report
+        main(find_aspect_ratios)
+        show_progress(force_display=True)
+        try:
+            list_to_csv(row_list,'report_aspectRatio.csv')
+        except (OSError, CSVError) as e:
+            eprint(f'\n{e}')
+
+        
